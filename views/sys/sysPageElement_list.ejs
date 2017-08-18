@@ -1,0 +1,46 @@
+<table class="table table-striped">
+    <thead>
+        <tr>
+			<th>显示名称</th>
+			<th>类型</th>
+
+            <th>操作</th>
+        </tr>
+    </thead>
+    <tbody>
+    <% list.forEach(function(data){ %>
+        <tr>
+			<td><%=data.title%></td>
+			<td>
+                <% if(data.type == 'HIDDEN_MENU'){ %>
+                    隐藏菜单
+                <% }else if(data.type == 'LINK_MENU'){ %>
+                    链接菜单
+                <% }else if(data.type == 'FOLD_MENU'){ %>
+                    折叠菜单
+                <%}%>
+            </td>
+
+            <td>
+                <a type="button" class="btn btn-sm btn-success" href="/sys/sysPageElement/edit?id=<%=data.id%>&editFlag=update&initPage=<%=pageNum%>">编辑</a>
+                <% if(data.title == '系统管理' || data.title == '用户管理' || data.title == '角色管理' || data.title == '菜单管理'){ %>
+                <a type="button" class="btn btn-sm btn-default" disabled="disabled">删除</a>
+                <% }else{%>
+                <a type="button" class="btn btn-sm btn-danger" onclick="deleteLogic('/sys/sysPageElement/delete?id=<%=data.id%>&editFlag=update',this,'infoFormList','infoDivList','page')">删除</a>
+                <%}%>
+            </td>
+        </tr>
+    <% })%>
+    </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="50">
+                <%- include('..//public/paging',{
+                    formId:'infoFormList',
+                    divId:'infoDivList',
+                    pageId:'page'
+                }) %>
+            </td>
+        </tr>
+    </tfoot>
+</table>

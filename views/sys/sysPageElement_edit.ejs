@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>页面元素管理</title>
+    <%- include('../public/public_css') %>
+	<link rel="stylesheet" href="/static/stylesheets/plugins/zTree/css/metroStyle/metroStyle.css" />
+
+</head>
+
+<body class="gray-bg">
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>
+                            <a onclick="toInitPage('/sys/sysPageElement/init')">
+                                <i class="fa fa-chevron-left"></i>
+                            </a>
+                            页面元素<%= editFlag=='add'?"新增":"编辑" %>
+                        </h5>
+                        <div class="ibox-tools">
+                            <a class="collapse-link">
+                                <i class="fa fa-chevron-up"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="ibox-content">
+                        <form id="form" action="/sys/sysPageElement/save" method="post" class="form-horizontal" accept-charset="UTF-8">
+                            <input type="hidden" id="initPage" name="initPage" value="<%=initPage%>">
+                            <input type="hidden" id="id" name="id" value="<%=data.id%>">
+                            <input type="hidden" id="editFlag" name="editFlag" value="<%=editFlag%>">
+
+							<div class="form-group">
+								<label class="col-sm-2 control-label">名称</label>
+								<div class="col-sm-10">
+									<input type="text" name="title" class="form-control" value="<%=data.title%>" >
+								</div>
+							</div>
+							<div class="hr-line-dashed"></div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label">父级菜单</label>
+								<div class="col-sm-10">
+									<input type="hidden" name="parent" id="parentId" value="<%=data.parent%>">
+									<ul id="tree" class="ztree" style="width:230px; overflow:auto;"></ul>
+
+								</div>
+							</div>
+							<div class="hr-line-dashed"></div>
+
+
+							<div class="form-group">
+								<label class="col-sm-2 control-label">类型</label>
+								<div class="col-sm-10">
+									<select class="form-control" id="type" name="type" >
+										<option value="LINK_MENU" <%=data.type=="LINK_MENU"?"selected='selected'":""%>>链接菜单</option>
+										<option value="FOLD_MENU" <%=data.type=="FOLD_MENU"?"selected='selected'":""%>>折叠菜单</option>
+										<option value="HIDDEN_MENU" <%=data.type=="HIDDEN_MENU"?"selected='selected'":""%>>隐藏菜单</option>
+										<!--<option value="BUTTON" <%=data.type=="BUTTON"?"selected='selected'":""%>>按钮</option>-->
+									</select>
+								</div>
+							</div>
+							<div class="hr-line-dashed"></div>
+
+							<div class="form-group">
+								<label class="col-sm-2 control-label">排序</label>
+								<div class="col-sm-10">
+									<input type="text" name="sort" class="form-control" value="<%=data.sort%>" >
+								</div>
+							</div>
+							<div class="hr-line-dashed"></div>
+
+							<div id="iconDiv" style="display: none">
+								<div class="form-group">
+									<label class="col-sm-2 control-label">图标</label>
+									<div class="col-sm-10">
+										<input type="text" name="icon" class="form-control" value="<%=data.icon%>" >
+									</div>
+								</div>
+								<div class="hr-line-dashed"></div>
+							</div>
+
+
+							<div id="linkDiv">
+								<div class="form-group" id="link_url">
+									<label class="col-sm-2 control-label">访问地址</label>
+									<div class="col-sm-10">
+										<input type="text" id="url" name="url" class="form-control" value="<%=data.url%>" >
+									</div>
+								</div>
+								<div class="hr-line-dashed"></div>
+							</div>
+							<div id="authDiv">
+								<div class="form-group">
+									<label class="col-sm-2 control-label">模块权限</label>
+									<div class="col-sm-10">
+										<table class="table table-bordered">
+											<thead>
+											<tr>
+												<th class="col-sm-6">权限地址</th>
+												<th class="col-sm-3">权限类型</th>
+												<th class="col-sm-3">操作</th>
+											</tr>
+											</thead>
+											<tbody>
+                                            <% data.permits.forEach(function(permit){ %>
+											<tr>
+												<td><input type="text" class="form-control" name="permit" value="<%=permit.url%>"></td>
+												<td><select class="form-control" name="permitType">
+														<option value="1" <%=permit.type == '1'?'selected':''%>>增</option>
+														<option value="2" <%=permit.type == '2'?'selected':''%>>删</option>
+														<option value="3" <%=permit.type == '3'?'selected':''%>>改</option>
+														<option value="4" <%=permit.type == '4'?'selected':''%>>查</option>
+													</select></td>
+												<td><button class="btn btn-danger" onclick="$(this).parent().parent().remove()">删除</button></td>
+											</tr>
+                                            <%}) %>
+											</tbody>
+											<tfoot>
+											<tr>
+												<td colspan="3">
+													<button class="btn btn-success" type="button" onclick="addLine()">新增一行</button>
+													<button class="btn btn-success" type="button" onclick="initLint()">快速初始化(建议填好访问地址后)</button>
+												</td>
+											</tr>
+											</tfoot>
+										</table>
+									</div>
+								</div>
+								<div class="hr-line-dashed"></div>
+							</div>
+
+
+
+
+                            <div class="form-group">
+                                <div class="col-sm-4 col-sm-offset-2">
+                                    <button class="btn btn-primary" type="submit">保存内容</button>
+                                    <button class="btn btn-white" onclick="toInitPage('/sys/sysPageElement/init')" type="button">取消</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <%- include('../public/public_js') %>
+	<script type="text/javascript" src="/static/javascripts/plugins/zTree/js/jquery.ztree.all.min.js"></script>
+
+    <!-- 自定义js -->
+
+
+    <script>
+
+
+
+		function addLine(){
+		    var str = "";
+            str += '<tr>';
+            str += '	<td><input type="text" class="form-control" name="permit"></td>';
+            str += '	<td><select class="form-control" name="permitType">';
+            str += '	    <option value="1">增</option>';
+            str += '	   <option value="2">删</option>';
+            str += '	    <option value="3">改</option>';
+            str += '	   <option value="4">查</option>';
+            str += '	</select></td>';
+            str += '    <td><button class="btn btn-danger" onclick="$(this).parent().parent().remove()">删除</button></td>';
+			str += '    </tr>';
+			$(".table tbody").append(str);
+		}
+
+		function initLint(){
+		    var prefix = $("#url").val();
+		    prefix = prefix.replace("/init","");
+            prefix = "/h"+prefix;
+            for(var i=0 ;i<7;i++){
+                var purl,ptype
+                if(i == 0){purl=prefix+'/add';ptype='1'}
+                if(i == 1){purl=prefix+'/delete';ptype='2'}
+                if(i == 2){purl=prefix+'/deleteLogic';ptype='2'}
+                if(i == 3){purl=prefix+'/update';ptype='3'}
+                if(i == 4){purl=prefix+'/selectById';ptype='4'}
+                if(i == 5){purl=prefix+'/selectList';ptype='4'}
+                if(i == 6){purl=prefix+'/selectPage';ptype='4'}
+
+                var str = "";
+                str += '<tr>';
+                str += '	<td><input type="text" class="form-control" value="'+purl+'" name="permit"></td>';
+                str += '	<td><select class="form-control" name="permitType">';
+                str += '	    <option value="1" '+(ptype=="1"?"selected":"")+'>增</option>';
+                str += '	   <option value="2" '+(ptype=="2"?"selected":"")+'>删</option>';
+                str += '	    <option value="3" '+(ptype=="3"?"selected":"")+'>改</option>';
+                str += '	   <option value="4" '+(ptype=="4"?"selected":"")+'>查</option>';
+                str += '	</select></td>';
+                str += '    <td><button class="btn btn-danger" onclick="$(this).parent().parent().remove()">删除</button></td>';
+                str += '    </tr>';
+                $(".table tbody").append(str);
+
+            }
+		}
+
+        $(document).ready(function () {
+            $('.i-checks').iCheck({
+                checkboxClass: 'icheckbox_square-green',
+                radioClass: 'iradio_square-green',
+            });
+
+
+			$("#type").on("change",function(){
+				if($(this).val() == "LINK_MENU"){
+					$("#iconDiv").css("display","block");
+					$("#linkDiv").css("display","block");
+                    $("#authDiv").css("display","block");
+				}
+				else if($(this).val() == "HIDDEN_MENU"){
+                    $("#iconDiv").css("display","none");
+                    $("#linkDiv").css("display","block");
+                    $("#authDiv").css("display","block");
+				}
+				else if($(this).val() == "FOLD_MENU"){
+                    $("#iconDiv").css("display","block");
+                    $("#linkDiv").css("display","none");
+                    $("#authDiv").css("display","none");
+				}
+				else{
+                    $("#iconDiv").css("display","none");
+                    $("#linkDiv").css("display","none");
+                    $("#authDiv").css("display","none");
+				}
+			});
+
+			$("#type").trigger("change");
+
+           // var treeObj = $.fn.zTree.getZTreeObj("tree");
+
+            var setting = {
+                data: {
+                    simpleData: {
+                        enable: true,
+                        idKey: "id",
+                        pIdKey: "parent",
+                        rootPId: 0
+                    },
+					key:{
+                        name:"title"
+					}
+                },
+                check: {
+                    enable: true,
+                    chkStyle: "radio",
+                    radioType : "all"
+                },
+				callback:{
+                    onCheck:function(event, treeId, treeNode){
+						$("#parentId").val(treeNode.id);
+					}
+				}
+            };
+
+            var dataNode = '<%- JSON.stringify(menuTrees) %>';
+            dataNode = JSON.parse(dataNode);
+            var zTreeObj = $.fn.zTree.init($("#tree"), setting, dataNode);
+
+
+        });
+    </script>
+
+
+</body>
+
+</html>

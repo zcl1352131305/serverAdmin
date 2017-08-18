@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>模板</title>
+    <%- include('public/public_css') %>
+
+    <script>
+        if (window.top !== window.self) {
+            window.top.location = window.location;
+        }
+    </script>
+</head>
+<body>
+<table class="table table-bordered">
+
+    <% data.list.forEach(function(item){%>
+    <tr>
+        <td ><%=item.roleName %></td>
+        <td ><%=item.priority %></td>
+        <td ><%=item.id %></td>
+
+    </tr>
+
+
+    <% }) %>
+
+
+</table>
+
+<%- include('public/public_js') %>
+</body>
+</html>

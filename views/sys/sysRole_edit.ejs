@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>角色管理管理</title>
+    <%- include('../public/public_css') %>
+    <link rel="stylesheet" href="/static/stylesheets/plugins/zTree/css/metroStyle/metroStyle.css" />
+
+</head>
+
+<body class="gray-bg">
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>
+                            <a onclick="toInitPage('/sys/sysRole/init')">
+                                <i class="fa fa-chevron-left"></i>
+                            </a>
+                            角色管理<%= editFlag=='add'?"新增":"编辑" %>
+                        </h5>
+                        <div class="ibox-tools">
+                            <a class="collapse-link">
+                                <i class="fa fa-chevron-up"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="ibox-content">
+                        <form id="form" action="/sys/sysRole/save" method="post" class="form-horizontal" accept-charset="UTF-8">
+                            <input type="hidden" id="initPage" name="initPage" value="<%=initPage%>">
+                            <input type="hidden" id="id" name="id" value="<%=data.id%>">
+                            <input type="hidden" id="editFlag" name="editFlag" value="<%=editFlag%>">
+
+
+							<div class="form-group">
+								<label class="col-sm-2 control-label">角色名称</label>
+								<div class="col-sm-10">
+									<input type="text" name="roleName" class="form-control" value="<%=data.roleName%>" >
+								</div>
+							</div>
+
+							<div class="hr-line-dashed"></div>
+
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">权限</label>
+                                <div class="col-sm-10">
+                                   <!--权限树-->
+                                    <ul id="treeDemo" class="ztree"></ul>
+                                    <div id="privilegeList">
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="hr-line-dashed"></div>
+
+
+                            <div class="form-group">
+                                <div class="col-sm-4 col-sm-offset-2">
+                                    <button class="btn btn-primary" type="button" onclick="submitForm()">保存内容</button>
+                                    <button class="btn btn-white" onclick="toInitPage('/sys/sysRole/init')" type="button">取消</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <%- include('../public/public_js') %>
+
+    <!-- 自定义js -->
+    <script type="text/javascript" src="/static/javascripts/plugins/zTree/js/jquery.ztree.all.min.js"></script>
+
+    <script>
+        var zTreeObj;
+        var hasPermitArray = <%- JSON.stringify(pageElement)%>
+        // zTree 的参数配置，深入使用请参考 API 文档（setting 配置详解）
+        var setting = {
+            data: {
+                simpleData: {
+                    enable: true,
+                    idKey: "id",
+                    pIdKey: "parent",
+                    rootPId: 0
+                }
+            },
+            check:{
+                chkStyle: "checkbox",
+                enable:true
+            },
+            callback: {
+                onCheck: zTreeOnCheck
+            }
+        };
+
+        $(document).ready(function () {
+            $('.i-checks').iCheck({
+                checkboxClass: 'icheckbox_square-green',
+                radioClass: 'iradio_square-green'
+            });
+            //初始化权限树结构
+            $.ajax({
+                url:'/sys/sysRole/privilege/tree',
+                success:function(data){
+                    zTreeObj = $.fn.zTree.init($("#treeDemo"), setting, data);
+                    //找出所有子节点（最底层节点）
+                    var nodes = zTreeObj.getNodesByFilter(nodeSearchFilter);
+                    if(nodes && nodes.length>0){
+                        var allSize = nodes.length;
+                        for(var i=0; i<allSize;i++){
+
+                            //为每个字节点追加增删查改
+                            var childNodes = [
+                                {"id":"1", "name":"新增"},
+                                {"id":"2", "name":"删除"},
+                                {"id":"3", "name":"修改"},
+                                {"id":"4", "name":"查询"}
+                            ]
+                            var treeNodes = zTreeObj.addNodes(nodes[i], -1, childNodes, true);
+                            var hasPermit = hasPermitArray[nodes[i].id];
+                            if(hasPermit){
+                                for(var j=0;j<treeNodes.length;j++){
+                                    if(hasPermit.indexOf(treeNodes[j].id)!=-1){
+                                        zTreeObj.checkNode(treeNodes[j], true, true, true);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                error:function (err) {
+                    alert(err);
+                }
+            })
+
+        });
+
+        /**
+         * 获取已选择权限
+         */
+        function initPrivilegeValue() {
+            $("#privilegeList").html("");
+            var nodes = zTreeObj.getCheckedNodes(true);
+            //存储这些节点
+            if(nodes && nodes.length>0){
+                var length = nodes.length;
+                for(var i=0;i<length;i++){
+                    var tempNode = nodes[i];
+                    if(!tempNode.isParent){
+                        var inputHTML = "<input type='hidden' value='"+nodes[i].parent+","+nodes[i].id+"'" +
+                                " name='privilege'/>"
+                        $("#privilegeList").append(inputHTML);
+                    }
+                }
+            }
+        }
+
+
+        function submitForm() {
+            //更新权限选择信息
+            initPrivilegeValue();
+            $("#form").submit();
+        }
+
+
+        //节点查找过滤器
+        function nodeSearchFilter(node) {
+            return !node.isParent;
+        }
+        //节点选择事件
+        function zTreeOnCheck(event, treeId, treeNode) {
+            //存储选择的子节点
+            console.log('node checked');
+        }
+
+
+    </script>
+
+
+</body>
+
+</html>

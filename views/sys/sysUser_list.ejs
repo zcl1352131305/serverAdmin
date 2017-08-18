@@ -1,0 +1,36 @@
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>用户名</th>
+            <th>真实姓名</th>
+            <th>操作</th>
+        </tr>
+    </thead>
+    <tbody>
+    <% list.forEach(function(data){ %>
+        <tr>
+            <td><%=data.userName%></td>
+            <td><%=data.realName%></td>
+            <td>
+                <a type="button" class="btn btn-sm btn-success" href="/sys/sysUser/edit?id=<%=data.id%>&editFlag=update&initPage=<%=pageNum%>">编辑</a>
+                <% if(data.userName == 'admin'){ %>
+                <a type="button" class="btn btn-sm btn-default" disabled="disabled">删除</a>
+                <%}else{%>
+                <a type="button" class="btn btn-sm btn-danger" onclick="deleteLogic('/sys/sysUser/delete?id=<%=data.id%>&editFlag=update',this,'infoFormList','infoDivList','page')">删除</a>
+                <%}%>
+            </td>
+        </tr>
+    <% })%>
+    </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="50">
+                <%- include('..//public/paging',{
+                    formId:'infoFormList',
+                    divId:'infoDivList',
+                    pageId:'page'
+                }) %>
+            </td>
+        </tr>
+    </tfoot>
+</table>

@@ -1,0 +1,38 @@
+<table class="table table-striped">
+    <thead>
+        <tr>
+			<th>名称</th>
+			<th>值</th>
+			<th>备注</th>
+			<th>是否开放</th>
+			<th>类别</th>
+            <th>操作</th>
+        </tr>
+    </thead>
+    <tbody>
+    <% list.forEach(function(data){ %>
+        <tr>
+			<td><%=data.name%></td>
+			<td><%=data.val%></td>
+			<td><%=data.note%></td>
+			<td><%=data.isOpen%></td>
+			<td><%=data.type=="wslx"?"文书类型":data.type=="bmlx"?"部门类型":data.type=="dwzxlx"?"对外资讯":""%></td>
+            <td>
+                <a type="button" class="btn btn-sm btn-success" href="/sys/sysDictionary/edit?id=<%=data.id%>&editFlag=update&initPage=<%=pageNum%>">编辑</a>
+                <a type="button" class="btn btn-sm btn-danger" onclick="deleteLogic('/sys/sysDictionary/delete?id=<%=data.id%>&editFlag=update',this,'infoFormList','infoDivList','page')">删除</a>
+            </td>
+        </tr>
+    <% })%>
+    </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="50">
+                <%- include('..//public/paging',{
+                    formId:'infoFormList',
+                    divId:'infoDivList',
+                    pageId:'page'
+                }) %>
+            </td>
+        </tr>
+    </tfoot>
+</table>

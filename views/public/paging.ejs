@@ -1,0 +1,67 @@
+<!--分页信息模板-->
+<ul class="pagination pull-right">
+    <% if( pageNum > 1){ %>
+    <li class="footable-page-arrow"><a onclick="loadUrlPage(1,'<%=formId%>','<%=divId%>','<%=pageId%>')">«</a></li>
+    <li class="footable-page-arrow"><a onclick="loadUrlPage('<%=pageNum-1%>','<%=formId%>','<%=divId%>','<%=pageId%>')">‹</a></li>
+    <% }else{ %>
+    <li class="footable-page-arrow disabled"><a>«</a></li>
+    <li class="footable-page-arrow disabled"><a>‹</a></li>
+    <% } %>
+
+    <% if( pageNum <= 5){ %>
+    <% for(var i=1;i<pageNum;i++){ %>
+    <li class="footable-page-arrow"><a onclick="loadUrlPage('<%=i%>','<%=formId%>','<%=divId%>','<%=pageId%>')"><%=i%></a></li>
+    <% } %>
+    <% } else{ %>
+    <% if( pageNum >(pages-5)){ %>
+    <% if( 1 >pageNum-5-(pageNum-(pages-5))){ %>
+    <% for(var i=1;i<pageNum;i++){ %>
+    <li class="footable-page-arrow"><a onclick="loadUrlPage('<%=i%>','<%=formId%>','<%=divId%>','<%=pageId%>')"><%=i%></a></li>
+    <% } %>
+    <% }else{ %>
+    <% for(var i=pageNum-5-(pageNum-(pages-5));i<pageNum;i++){ %>
+    <li class="footable-page-arrow"><a onclick="loadUrlPage('<%=i%>','<%=formId%>','<%=divId%>','<%=pageId%>')"><%=i%></a></li>
+    <% } %>
+    <% } %>
+    <% }else{ %>
+    <% for(var i=pageNum-5;i<pageNum;i++){ %>
+    <li class="footable-page-arrow"><a onclick="loadUrlPage('<%=i%>','<%=formId%>','<%=divId%>','<%=pageId%>')"><%=i%></a></li>
+    <% } %>
+    <% } %>
+    <% } %>
+
+    <li class="footable-page-arrow active"><a onclick="loadUrlPage('<%=pageNum%>','<%=formId%>','<%=divId%>','<%=pageId%>')"><%=pageNum%></a></li>
+
+
+
+    <% if( pageNum > (pages-5)){ %>
+    <% for(var i=pageNum+1;i<=pages;i++){ %>
+    <li class="footable-page-arrow"><a onclick="loadUrlPage('<%=i%>','<%=formId%>','<%=divId%>','<%=pageId%>')"><%=i%></a></li>
+    <% } %>
+    <% } else{ %>
+    <% if(pageNum <= 5 ){ %>
+    <% if(pages < pageNum+5+(5-pageNum+1) ){ %>
+    <% for(var i=pageNum+1;i<=pages;i++){ %>
+    <li class="footable-page-arrow"><a onclick="loadUrlPage('<%=i%>','<%=formId%>','<%=divId%>','<%=pageId%>')"><%=i%></a></li>
+    <% } %>
+    <% }else{ %>
+    <% for(var i=pageNum+1;i<=pageNum+5+(5-pageNum+1);i++){ %>
+    <li class="footable-page-arrow"><a onclick="loadUrlPage('<%=i%>','<%=formId%>','<%=divId%>','<%=pageId%>')"><%=i%></a></li>
+    <% } %>
+    <% } %>
+    <% } else{ %>
+    <% for(var i=pageNum+1;i<=pageNum+5;i++){ %>
+    <li class="footable-page-arrow"><a onclick="loadUrlPage('<%=i%>','<%=formId%>','<%=divId%>','<%=pageId%>')"><%=i%></a></li>
+    <% } %>
+    <% } %>
+    <% } %>
+
+    <% if( pageNum < pages){ %>
+    <li class="footable-page-arrow"><a onclick="loadUrlPage('<%=pageNum+1%>','<%=formId%>','<%=divId%>','<%=pageId%>')">›</a></li>
+    <li class="footable-page-arrow"><a onclick="loadUrlPage('<%=pages%>','<%=formId%>','<%=divId%>','<%=pageId%>')">»</a></li>
+    <% }else{ %>
+    <li class="footable-page-arrow disabled"><a>›</a></li>
+    <li class="footable-page-arrow disabled"><a>»</a></li>
+    <% } %>
+    <li class="footable-page-arrow disabled"><a>共&nbsp;<%=pages%>&nbsp;页&nbsp;&nbsp;&nbsp;&nbsp;<%=total%>&nbsp;条记录</a>
+</ul>

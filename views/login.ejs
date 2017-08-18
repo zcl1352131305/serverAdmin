@@ -1,0 +1,106 @@
+<!--统一登录授权界面-->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>旅游综合平台登录</title>
+    <%- include('public/public_css') %>
+    <link rel="stylesheet" href="/static/stylesheets/login/login.css">
+    <link href="/static/stylesheets/plugins/toastr/toastr.min.css" rel="stylesheet">
+    <script>
+        if (window.top !== window.self) {
+            window.top.location = "<%= loginUrl %>";
+        }
+    </script>
+</head>
+
+<body class="signin">
+<div class="signinpanel">
+    <div class="row">
+        <div class="col-sm-7">
+            <div class="signin-info">
+                <div class="logopanel m-b">
+                    <h1>旅游综合平台</h1>
+                </div>
+                <div class="m-b"></div>
+                <h4>欢迎使用 <strong></strong></h4>
+            </div>
+        </div>
+        <div class="col-sm-5">
+            <form>
+
+                <input type="text" id="userName" name="username" class="form-control uname" placeholder="用户名"/>
+                <input type="password" id="userPassword" name="password" class="form-control pword m-b"
+                       placeholder="密码"/>
+                <a href=""><!--忘记密码了？--></a>
+                <button class="btn btn-success btn-block" type="button" id="loginBtn" disabled="disabled">登录</button>
+            </form>
+
+            <form method="post" id="loginForm" action="/loginSys">
+                <input type="hidden" name="redirectUrl" value="<%= redirectUrl %>">
+                <input type="hidden" name="userName" id="uName"/>
+                <input type="hidden" name="timestamp" id="timestamp">
+                <input type="hidden" name="password" id="uPassword">
+                <input type="hidden" name="loginToken" id="loginToken">
+            </form>
+        </div>
+    </div>
+    <div class="signup-footer">
+        <div class="pull-left">
+            &copy; 2017 All Rights Reserved. Softvan
+        </div>
+    </div>
+</div>
+
+<%- include('public/public_js') %>
+<script type="text/javascript" src="/static/javascripts/plugins/md5/jquery.md5.min.js"></script>
+<script src="/static/javascripts/plugins/toastr/toastr.min.js"></script>
+<script type="text/javascript">
+    var msg = '';
+    toastr.options.positionClass = "toast-top-center";
+    $(document).ready(function () {
+        if (msg != '') {
+            toastr.error(msg);
+        }
+        initLoginToken();
+        $("#loginBtn").click(function () {
+            $("#loginBtn").html("登录中...");
+            //TODO 判断是否为空
+            $("#uName").val($("#userName").val());
+            $("#uPassword").val($.md5($("#userName").val() + $("#userPassword").val()));
+           // $("#loginForm").submit();
+            $("#loginForm").ajaxSubmit(function (data) {
+                if (data.code == '200') {
+                    location.href = data.redirectUrl;
+                }else {
+                    toastr.error(data.message);
+                    $("#loginBtn").html("登录");
+                }
+            });
+        })
+
+
+
+    })
+
+
+    function initLoginToken() {
+        $.ajax({
+            url: "/login/token",
+            success: function (data) {
+                if (data.code == "200") {
+                    $("#timestamp").val(data.data.timestamp);
+                    $("#loginToken").val(data.data.token);
+                    $("#loginBtn").removeAttr("disabled");
+                }
+            },
+            error: function (err) {
+                toastr.error("发生错误");
+            }
+        })
+    }
+
+
+</script>
+</body>
+
+</html>

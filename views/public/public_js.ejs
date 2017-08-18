@@ -1,0 +1,99 @@
+<!---->
+<script type="text/javascript" src="/static/javascripts/jquery.min.js?v=2.1.4"></script>
+<script type="text/javascript" src="/static/javascripts/bootstrap.min.js?v=3.3.6"></script>
+<script type="text/javascript" src="/static/javascripts/contabs.js"></script>
+<script type="text/javascript" src="/static/javascripts/jquery.form.js"></script>
+
+<script src="/static/javascripts/plugins/metisMenu/jquery.metisMenu.js"></script>
+<script src="/static/javascripts/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+<script src="/static/javascripts/plugins/layer/layer.min.js"></script>
+<script src="/static/javascripts/plugins/pace/pace.min.js"></script>
+<script src="/static/javascripts/plugins/footable/footable.all.min.js"></script>
+<script src="/static/javascripts/plugins/iCheck/icheck.min.js"></script>
+<script src="/static/javascripts/hplus.js?v=4.1.0"></script>
+<script src="/static/javascripts/content.js?v=1.0.0"></script>
+<script src="/static/javascripts/plugins/layer/laydate/laydate.js"></script>
+<script src="/static/javascripts/plugins/sweetalert/sweetalert.min.js"></script>
+<script>
+    var basePath = "http://127.0.0.1:3000";
+    var picBasePath = "http://127.0.0.1:8080"
+    function submitFrom(page){
+        loadUrlPage(page,'infoFormList','infoDivList');
+    }
+    function loadUrlPage(page, formId, divId, pageId) {
+        //判断是否登录超时
+        //if (cheackLogin(req)) {
+        if (page != null) {
+            $('#'+pageId).val(page);
+        }
+        jQuery("#" + formId).ajaxSubmit(function(data) {
+            $('#' + divId).html(data);
+        });
+        //}
+    }
+
+    function toAddPage(url){
+        window.location.href = url + "&initPage="+$("#page").val();
+    }
+
+    function deleteLogic(url,obj,formId,divId,pageId){
+        swal({
+            title: "确认删除?",
+            text: "删除后不可恢复!",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "确认",
+            cancelButtonText: "取消",
+            closeOnConfirm: false
+        }, function(){
+            $.ajax({
+                url:url,
+                success:function(data){
+                    if(data.code == '200'){
+                        swal("删除成功!", "该记录已删除！", "success");
+                        loadUrlPage($("#"+pageId).val(), formId, divId, pageId);
+                    }
+                    else{
+                        swal("删除失败!", data.message, "error");
+                    }
+                },
+                error:function(){
+                    swal("删除失败!", "系统错误", "error");
+                }
+            });
+        });
+    }
+
+
+
+    $(".refresh-link").on("click",function () {
+        window.location.reload();
+    });
+
+    function toInitPage(url){
+        var p = "?";
+        if(url.indexOf("?")!=-1){
+            p = "&"
+        }
+        window.location.href = url + p + "initPage="+$("#initPage").val();
+    }
+
+    function saveRichFile(file,richId){
+        var data = new FormData();
+        data.append("file", file);
+        console.log(data);
+        $.ajax({
+            data: data,
+            type: "POST",
+            url: "/proxy/file/upload",
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function(response) {
+                $("#"+richId).summernote('insertImage', picBasePath+response.fileUrl, response.fileName); // the insertImage API
+            }
+        });
+    }
+
+</script>

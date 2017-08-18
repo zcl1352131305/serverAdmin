@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>微信菜单管理</title>
+    <%- include('../public/public_css') %>
+
+</head>
+
+<body class="gray-bg">
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>
+                            <a onclick="toInitPage('/wechat/wechatMenu/init')">
+                                <i class="fa fa-chevron-left"></i>
+                            </a>
+                            微信菜单<%= editFlag=='add'?"新增":"编辑" %>
+                        </h5>
+                        <div class="ibox-tools">
+                            <a class="collapse-link">
+                                <i class="fa fa-chevron-up"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="ibox-content">
+                        <form id="form" action="/wechat/wechatMenu/save" method="post" class="form-horizontal" accept-charset="UTF-8">
+                            <input type="hidden" id="initPage" name="initPage" value="<%=initPage%>">
+                            <input type="hidden" id="id" name="id" value="<%=data.id%>">
+                            <input type="hidden" id="editFlag" name="editFlag" value="<%=editFlag%>">
+
+							<div class="form-group">
+								<label class="col-sm-2 control-label">类型</label>
+								<div class="col-sm-10">
+									<select name="type" class="form-control">
+										<option value="view" <%if(data.type == 'view'){%>selected="selected"<%}%> >网页类型</option>
+										<option value="click" <%if(data.type == 'click'){%>selected="selected"<%}%> >点击类型</option>
+										<option value="miniprogram" <%if(data.type == 'miniprogram'){%>selected="selected"<%}%> >小程序类型</option>
+									</select>
+								</div>
+							</div>
+							<div class="hr-line-dashed"></div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label">名称</label>
+								<div class="col-sm-10">
+									<input type="text" name="name" class="form-control" value="<%=data.name%>" >
+								</div>
+							</div>
+							<div class="hr-line-dashed"></div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label">菜单key值</label>
+								<div class="col-sm-10">
+									<input type="text" name="key" class="form-control" value="<%=data.key%>" >
+								</div>
+							</div>
+							<div class="hr-line-dashed"></div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label">菜单地址</label>
+								<div class="col-sm-10">
+									<input type="text" name="url" class="form-control" value="<%=data.url%>" >
+								</div>
+							</div>
+							<div class="hr-line-dashed"></div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label">mediaId</label>
+								<div class="col-sm-10">
+									<input type="text" name="mediaId" class="form-control" value="<%=data.mediaId%>" >
+								</div>
+							</div>
+							<div class="hr-line-dashed"></div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label">小程序appid</label>
+								<div class="col-sm-10">
+									<input type="text" name="appid" class="form-control" value="<%=data.appid%>" >
+								</div>
+							</div>
+							<div class="hr-line-dashed"></div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label">小程序路径</label>
+								<div class="col-sm-10">
+									<input type="text" name="pagepath" class="form-control" value="<%=data.pagepath%>" >
+								</div>
+							</div>
+							<div class="hr-line-dashed"></div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label">父级菜单</label>
+								<div class="col-sm-10">
+									<select name="parent" class="form-control">
+										<option value="0">顶级</option>
+                                        <%parents.forEach(function (dat) {%>
+                                        <option value="<%=dat.id%>" <%if(data.parent == dat.id){%>selected="selected"
+                                                <%}%>><%=dat.name%></option>
+                                        <%})%>
+									</select>
+								</div>
+							</div>
+							<div class="hr-line-dashed"></div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label">排序</label>
+								<div class="col-sm-10">
+									<input type="text" name="sort" class="form-control" value="<%=data.sort%>" >
+								</div>
+							</div>
+							<div class="hr-line-dashed"></div>
+
+
+                            <div class="form-group">
+                                <div class="col-sm-4 col-sm-offset-2">
+                                    <button class="btn btn-primary" type="submit">保存内容</button>
+                                    <button class="btn btn-white" onclick="toInitPage('/wechat/wechatMenu/init')" type="button">取消</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <%- include('../public/public_js') %>
+    <!-- 自定义js -->
+    <!-- 验证js -->
+    <script src="/static/javascripts/plugins/validate/jquery.validate.min.js"></script>
+    <script src="/static/javascripts/plugins/validate/messages_zh.min.js"></script>
+    <script src="/static/javascripts/ValidatorDefault.js"></script>
+
+
+    <script>
+        $(document).ready(function () {
+            $('.i-checks').iCheck({
+                checkboxClass: 'icheckbox_square-green',
+                radioClass: 'iradio_square-green',
+            });
+        });
+
+        $().ready(function () {
+            var icon = "<i class='fa fa-times-circle'></i> ";
+            $("#form").validate({
+				rules: {
+					type: {
+						maxlength:15,
+					},
+					name: {
+						maxlength:60,
+					},
+					key: {
+						maxlength:128,
+					},
+					url: {
+						maxlength:1024,
+					},
+					mediaId: {
+						maxlength:64,
+					},
+					appid: {
+						maxlength:32,
+					},
+					pagepath: {
+						maxlength:100,
+					},
+					parent: {
+						maxlength:null,
+					},
+					sort: {
+						maxlength:null,
+					},
+				},
+				messages: {
+					type: {
+						maxlength: icon + "必须15字符以下",
+					},
+					name: {
+						maxlength: icon + "必须60字符以下",
+					},
+					key: {
+						maxlength: icon + "必须128字符以下",
+					},
+					url: {
+						maxlength: icon + "必须1024字符以下",
+					},
+					mediaId: {
+						maxlength: icon + "必须64字符以下",
+					},
+					appid: {
+						maxlength: icon + "必须32字符以下",
+					},
+					pagepath: {
+						maxlength: icon + "必须100字符以下",
+					},
+					parent: {
+						maxlength: icon + "必须null字符以下",
+					},
+					sort: {
+						maxlength: icon + "必须null字符以下",
+					},
+				},
+
+            });
+        });
+    </script>
+
+
+</body>
+
+</html>

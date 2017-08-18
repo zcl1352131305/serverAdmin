@@ -1,0 +1,41 @@
+<table class="table table-striped">
+    <thead>
+        <tr>
+			<th>类型</th>
+			<th>名称</th>
+            <th>层级</th>
+			<th>菜单key值</th>
+			<th>菜单地址</th>
+
+            <th>操作</th>
+        </tr>
+    </thead>
+    <tbody>
+    <% list.forEach(function(data){ %>
+        <tr>
+			<td><%=data.type%></td>
+			<td><%=data.name%></td>
+            <td><%=data.parent==0?"一级":"二级"%></td>
+
+			<td><%=data.key%></td>
+			<td><%=data.url%></td>
+
+            <td>
+                <a type="button" class="btn btn-sm btn-success" href="/wechat/wechatMenu/edit?id=<%=data.id%>&editFlag=update&initPage=<%=pageNum%>">编辑</a>
+                <a type="button" class="btn btn-sm btn-danger" onclick="deleteLogic('/wechat/wechatMenu/delete?id=<%=data.id%>&editFlag=update',this,'infoFormList','infoDivList','page')">删除</a>
+            </td>
+        </tr>
+    <% })%>
+    </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="50">
+                <%- include('..//public/paging',{
+                    formId:'infoFormList',
+                    divId:'infoDivList',
+                    pageId:'page'
+                }) %>
+            </td>
+        </tr>
+    </tfoot>
+</table>

@@ -1,0 +1,155 @@
+#!/usr/bin/env node
+
+/**
+ * Module dependencies.
+ */
+
+var app = require('../app');
+var debug = require('debug')('server:server');
+var http = require('http');
+var domain = require('domain');
+var cluster = require('cluster');
+var numCPUs = require('os').cpus().length;
+
+/**
+ * Get port from environment and store in Express.
+ */
+
+var port = normalizePort(process.env.PORT || '3000');
+app.set('port', port);
+
+/**
+ * Create HTTP server.
+ */
+
+var server = http.createServer(app);
+
+//创建多个线程
+if (cluster.isMaster) {
+    // Fork workers.
+    for (var i = 0; i < numCPUs; i++) {
+        cluster.fork();
+    }
+    cluster.on('exit', function (worker, code, signal) {
+        console.log('worker ' + worker.process.pid + ' died');
+        cluster.fork();
+        console.log("new cluster created");
+    });
+} else {
+    // Workers can share any TCP connection
+    // In this case its a HTTP server
+    /**
+     * Listen on provided port, on all network interfaces.
+     */
+    server.listen(port);
+    server.on('error', onError);
+    server.on('listening', onListening);
+    console.log('worker' + cluster.worker.id + " running");
+}
+
+// error handler
+app.use(function (err, req, res, next) {
+    //终止promise所抛出的错误，不用再处理
+    if(err.status == 601){
+        console.log(err.status);
+        return;
+    }
+    // set locals, only providing error in development
+    res.locals.message = err.message;
+    res.locals.error = req.app.get('env') === 'development' ? err : {};
+    console.error("error handler: "+ err.message);
+    // render the error page
+    res.status(err.status || 500);
+    console.error("error status: " + err.status);
+        //重启服务
+        var killTimer = setTimeout(function () {
+            process.exit(1);
+        }, 30000);
+        killTimer.unref();
+        server.close();
+        if (cluster.worker) {
+            cluster.worker.disconnect();
+        }
+     res.render('error');
+});
+
+/**
+ * 未捕获异常监听
+ * 暂停接受新请求，现有请求结束后将重启此进程
+ */
+process.on('uncaughtException', function (err) {
+    console.log("==uncaughtException== : " + err);
+    try {
+        var killTimer = setTimeout(function () {
+            process.exit(1);
+        }, 30000);
+        killTimer.unref();
+        server.close();
+        if (cluster.worker) {
+            cluster.worker.disconnect();
+        }
+    } catch (e) {
+        console.log('error when exit', e.stack);
+    }
+});
+
+
+/**
+ * Normalize a port into a number, string, or false.
+ */
+
+function normalizePort(val) {
+    var port = parseInt(val, 10);
+
+    if (isNaN(port)) {
+        // named pipe
+        return val;
+    }
+
+    if (port >= 0) {
+        // port number
+        return port;
+    }
+
+    return false;
+}
+
+/**
+ * Event listener for HTTP server "error" event.
+ */
+
+function onError(error) {
+    if (error.syscall !== 'listen') {
+        throw error;
+    }
+
+    var bind = typeof port === 'string'
+        ? 'Pipe ' + port
+        : 'Port ' + port;
+
+    // handle specific listen errors with friendly messages
+    switch (error.code) {
+        case 'EACCES':
+            console.error(bind + ' requires elevated privileges');
+            process.exit(1);
+            break;
+        case 'EADDRINUSE':
+            console.error(bind + ' is already in use');
+            process.exit(1);
+            break;
+        default:
+            throw error;
+    }
+}
+
+/**
+ * Event listener for HTTP server "listening" event.
+ */
+
+function onListening() {
+    var addr = server.address();
+    var bind = typeof addr === 'string'
+        ? 'pipe ' + addr
+        : 'port ' + addr.port;
+    debug('Listening on ' + bind);
+}

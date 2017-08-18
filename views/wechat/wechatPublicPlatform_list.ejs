@@ -1,0 +1,30 @@
+<table class="table table-striped">
+    <thead>
+        <tr>
+
+            <th>操作</th>
+        </tr>
+    </thead>
+    <tbody>
+    <% list.forEach(function(data){ %>
+        <tr>
+
+            <td>
+                <a type="button" class="btn btn-sm btn-success" href="/wechat/wechatPublicPlatform/edit?id=<%=data.id%>&editFlag=update&initPage=<%=pageNum%>">编辑</a>
+                <a type="button" class="btn btn-sm btn-danger" onclick="deleteLogic('/wechat/wechatPublicPlatform/delete?id=<%=data.id%>&editFlag=update',this,'infoFormList','infoDivList','page')">删除</a>
+            </td>
+        </tr>
+    <% })%>
+    </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="50">
+                <%- include('..//public/paging',{
+                    formId:'infoFormList',
+                    divId:'infoDivList',
+                    pageId:'page'
+                }) %>
+            </td>
+        </tr>
+    </tfoot>
+</table>

@@ -1,0 +1,45 @@
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th>头像</th>
+        <th>昵称</th>
+        <th>性别</th>
+        <th>城市</th>
+        <th>省份</th>
+        <th>国家</th>
+        <th>是否关注</th>
+
+    </tr>
+    </thead>
+    <tbody>
+    <% list.forEach(function(data){ %>
+    <tr>
+        <td><img src="<%= data.headImgUrl %>" width="50"></td>
+        <td><%= data.nickName %></td>
+        <td><%= data.sex %></td>
+        <td><%= data.city %></td>
+        <td><%= data.province %></td>
+        <td><%= data.country %></td>
+        <td><% if(data.subscribe == '0'){ %>
+            否
+            <% } else { %>
+            是
+            <% } %>
+        </td>
+
+
+    </tr>
+    <% }) %>
+    </tbody>
+    <tfoot>
+    <tr>
+        <td colspan="50">
+            <%- include('..//public/paging',{
+                formId:'infoFormList',
+                divId:'infoDivList',
+                pageId:'page'
+            }) %>
+        </td>
+    </tr>
+    </tfoot>
+</table>

@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>微信用户管理管理</title>
+    <%- include('../public/public_css') %>
+
+</head>
+
+<body class="gray-bg">
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>
+                            <a onclick="toInitPage('/wechat/wechatUserInfo/init')">
+                                <i class="fa fa-chevron-left"></i>
+                            </a>
+                            微信用户管理<%= editFlag=='add'?"新增":"编辑" %>
+                        </h5>
+                        <div class="ibox-tools">
+                            <a class="collapse-link">
+                                <i class="fa fa-chevron-up"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="ibox-content">
+                        <form id="form" action="/wechat/wechatUserInfo/save" method="post" class="form-horizontal" accept-charset="UTF-8">
+                            <input type="hidden" id="initPage" name="initPage" value="<%=initPage%>">
+                            <input type="hidden" id="id" name="id" value="<%=data.id%>">
+                            <input type="hidden" id="editFlag" name="editFlag" value="<%=editFlag%>">
+
+							<div class="form-group">
+								<label class="col-sm-2 control-label"></label>
+								<div class="col-sm-10">
+									<input type="text" name="openId" class="form-control" value="<%=data.openId%>" >
+								</div>
+							</div>
+							<div class="hr-line-dashed"></div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label">开放平台联合id</label>
+								<div class="col-sm-10">
+									<input type="text" name="unionId" class="form-control" value="<%=data.unionId%>" >
+								</div>
+							</div>
+							<div class="hr-line-dashed"></div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label">昵称</label>
+								<div class="col-sm-10">
+									<input type="text" name="nickName" class="form-control" value="<%=data.nickName%>" >
+								</div>
+							</div>
+							<div class="hr-line-dashed"></div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label">性别(1:男，2:女，0:未知)</label>
+								<div class="col-sm-10">
+									<input type="text" name="sex" class="form-control" value="<%=data.sex%>" >
+								</div>
+							</div>
+							<div class="hr-line-dashed"></div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label">所在城市</label>
+								<div class="col-sm-10">
+									<input type="text" name="city" class="form-control" value="<%=data.city%>" >
+								</div>
+							</div>
+							<div class="hr-line-dashed"></div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label">所在国家</label>
+								<div class="col-sm-10">
+									<input type="text" name="country" class="form-control" value="<%=data.country%>" >
+								</div>
+							</div>
+							<div class="hr-line-dashed"></div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label">所在省份</label>
+								<div class="col-sm-10">
+									<input type="text" name="province" class="form-control" value="<%=data.province%>" >
+								</div>
+							</div>
+							<div class="hr-line-dashed"></div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label">用户语言</label>
+								<div class="col-sm-10">
+									<input type="text" name="language" class="form-control" value="<%=data.language%>" >
+								</div>
+							</div>
+							<div class="hr-line-dashed"></div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label">用户头像</label>
+								<div class="col-sm-10">
+									<input type="text" name="headImgUrl" class="form-control" value="<%=data.headImgUrl%>" >
+								</div>
+							</div>
+							<div class="hr-line-dashed"></div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label">关注时间</label>
+								<div class="col-sm-10">
+									<input type="text" name="subscribeTime" class="form-control" value="<%=data.subscribeTime%>" >
+								</div>
+							</div>
+							<div class="hr-line-dashed"></div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label">是否订阅（0否）</label>
+								<div class="col-sm-10">
+									<input type="text" name="subscribe" class="form-control" value="<%=data.subscribe%>" >
+								</div>
+							</div>
+							<div class="hr-line-dashed"></div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label">用户备注</label>
+								<div class="col-sm-10">
+									<input type="text" name="remark" class="form-control" value="<%=data.remark%>" >
+								</div>
+							</div>
+							<div class="hr-line-dashed"></div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label"></label>
+								<div class="col-sm-10">
+									<input type="text" name="groupId" class="form-control" value="<%=data.groupId%>" >
+								</div>
+							</div>
+							<div class="hr-line-dashed"></div>
+
+
+                            <div class="form-group">
+                                <div class="col-sm-4 col-sm-offset-2">
+                                    <button class="btn btn-primary" type="submit">保存内容</button>
+                                    <button class="btn btn-white" onclick="toInitPage('/wechat/wechatUserInfo/init')" type="button">取消</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <%- include('../public/public_js') %>
+    <!-- 自定义js -->
+    <!-- 验证js -->
+    <script src="/static/javascripts/plugins/validate/jquery.validate.min.js"></script>
+    <script src="/static/javascripts/plugins/validate/messages_zh.min.js"></script>
+    <script src="/static/javascripts/ValidatorDefault.js"></script>
+
+
+    <script>
+        $(document).ready(function () {
+            $('.i-checks').iCheck({
+                checkboxClass: 'icheckbox_square-green',
+                radioClass: 'iradio_square-green',
+            });
+        });
+
+        $().ready(function () {
+            var icon = "<i class='fa fa-times-circle'></i> ";
+            $("#form").validate({
+				rules: {
+					openId: {
+						maxlength:64,
+					},
+					unionId: {
+						maxlength:64,
+					},
+					nickName: {
+						maxlength:100,
+					},
+					sex: {
+						maxlength:1,
+					},
+					city: {
+						maxlength:100,
+					},
+					country: {
+						maxlength:100,
+					},
+					province: {
+						maxlength:100,
+					},
+					language: {
+						maxlength:60,
+					},
+					headImgUrl: {
+						maxlength:300,
+					},
+					subscribeTime: {
+						maxlength:null,
+					},
+					subscribe: {
+						maxlength:1,
+					},
+					remark: {
+						maxlength:50,
+					},
+					groupId: {
+						maxlength:64,
+					},
+				},
+				messages: {
+					openId: {
+						maxlength: icon + "必须64字符以下",
+					},
+					unionId: {
+						maxlength: icon + "必须64字符以下",
+					},
+					nickName: {
+						maxlength: icon + "必须100字符以下",
+					},
+					sex: {
+						maxlength: icon + "必须1字符以下",
+					},
+					city: {
+						maxlength: icon + "必须100字符以下",
+					},
+					country: {
+						maxlength: icon + "必须100字符以下",
+					},
+					province: {
+						maxlength: icon + "必须100字符以下",
+					},
+					language: {
+						maxlength: icon + "必须60字符以下",
+					},
+					headImgUrl: {
+						maxlength: icon + "必须300字符以下",
+					},
+					subscribeTime: {
+						maxlength: icon + "必须null字符以下",
+					},
+					subscribe: {
+						maxlength: icon + "必须1字符以下",
+					},
+					remark: {
+						maxlength: icon + "必须50字符以下",
+					},
+					groupId: {
+						maxlength: icon + "必须64字符以下",
+					},
+				},
+
+            });
+        });
+    </script>
+
+
+</body>
+
+</html>
